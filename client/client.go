@@ -10,6 +10,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 )
@@ -18,6 +19,18 @@ type payload struct {
 	Subject   string `json:"subject"`
 	Body      string `json:"body"`
 	Timestamp int64  `json:"timestamp"`
+}
+
+func httpError(err error) error {
+	if err == nil {
+		return nil
+	}
+	urlErr, ok := err.(*url.Error)
+	if !ok {
+		return err
+	}
+
+	return urlErr.Err
 }
 
 func main() {
@@ -29,14 +42,14 @@ func main() {
 	privateKeyHex := os.Getenv("PRIVATE_KEY")
 	privateKeyBytes, err := hex.DecodeString(privateKeyHex)
 	if err != nil {
-		log.Fatalf("decoding private key: %w")
+		log.Fatalf("decoding private key: %w", err)
 	}
 
 	privateKey := ed25519.NewKeyFromSeed(privateKeyBytes)
 
 	data, err := io.ReadAll(os.Stdin)
 	if err != nil {
-		log.Fatalf("read failed: %w")
+		log.Fatalf("read failed: %w", err)
 	}
 
 	timestamp := time.Now().Unix()
@@ -48,12 +61,12 @@ func main() {
 
 	marshalled, err := json.Marshal(p)
 	if err != nil {
-		log.Fatalf("json: %w")
+		log.Fatalf("json: %w", err)
 	}
 
 	signature, err := privateKey.Sign(nil, marshalled, crypto.Hash(0))
 	if err != nil {
-		log.Fatalf("sign: %w")
+		log.Fatalf("sign: %w", err)
 	}
 
 	signed := append(signature, marshalled...)
@@ -63,6 +76,6 @@ func main() {
 
 	_, err = http.Post(baseUri+"/notification", "application/json", bytes.NewBuffer([]byte(jsonData)))
 	if err != nil {
-		log.Fatalf("post: %w")
+		log.Fatalf("post: %s: %w", err.Error(), httpError(err))
 	}
 }
