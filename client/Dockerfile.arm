@@ -8,6 +8,9 @@ ENV GOARCH=arm
 ENV GOOS=linux
 ENV GOPROXY=proxy.golang.org
 
+COPY go.mod $APP_ROOT/
+RUN go mod download
+
 COPY . $APP_ROOT/
 RUN go build -o build/client ./client.go
 

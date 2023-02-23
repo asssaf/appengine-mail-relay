@@ -13,6 +13,8 @@ import (
 	"net/url"
 	"os"
 	"time"
+
+	_ "github.com/breml/rootcerts"
 )
 
 type payload struct {
