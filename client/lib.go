@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"bytes"
@@ -8,10 +8,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"time"
 
 	_ "github.com/breml/rootcerts"
@@ -35,23 +33,16 @@ func httpError(err error) error {
 	return urlErr.Err
 }
 
-func main() {
-	baseUri := os.Getenv("BASE_URI")
-	if len(baseUri) == 0 {
-		log.Fatalf("BASE_URI must be set")
-	}
+type Request struct {
+	BaseUri    string
+	PrivateKey ed25519.PrivateKey
+	DataReader io.Reader
+}
 
-	privateKeyHex := os.Getenv("PRIVATE_KEY")
-	privateKeyBytes, err := hex.DecodeString(privateKeyHex)
+func SendRequest(request Request) error {
+	data, err := io.ReadAll(request.DataReader)
 	if err != nil {
-		log.Fatalf("decoding private key: %w", err)
-	}
-
-	privateKey := ed25519.NewKeyFromSeed(privateKeyBytes)
-
-	data, err := io.ReadAll(os.Stdin)
-	if err != nil {
-		log.Fatalf("read failed: %w", err)
+		return fmt.Errorf("read failed: %w", err)
 	}
 
 	timestamp := time.Now().Unix()
@@ -63,12 +54,12 @@ func main() {
 
 	marshalled, err := json.Marshal(p)
 	if err != nil {
-		log.Fatalf("json: %w", err)
+		return fmt.Errorf("json: %w", err)
 	}
 
-	signature, err := privateKey.Sign(nil, marshalled, crypto.Hash(0))
+	signature, err := request.PrivateKey.Sign(nil, marshalled, crypto.Hash(0))
 	if err != nil {
-		log.Fatalf("sign: %w", err)
+		return fmt.Errorf("sign: %w", err)
 	}
 
 	signed := append(signature, marshalled...)
@@ -76,8 +67,10 @@ func main() {
 
 	jsonData := fmt.Sprintf(`{"signature": "%s"}`, signedHex)
 
-	_, err = http.Post(baseUri+"/notification", "application/json", bytes.NewBuffer([]byte(jsonData)))
+	_, err = http.Post(request.BaseUri+"/notification", "application/json", bytes.NewBuffer([]byte(jsonData)))
 	if err != nil {
-		log.Fatalf("post: %s: %w", err.Error(), httpError(err))
+		return fmt.Errorf("post: %s: %w", err.Error(), httpError(err))
 	}
+
+	return nil
 }

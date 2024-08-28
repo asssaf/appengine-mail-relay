@@ -12,7 +12,8 @@ COPY go.mod $APP_ROOT/
 RUN go mod download
 
 COPY . $APP_ROOT/
-RUN go build -o build/client ./client.go
+RUN go build -o build/client ./cli/cli.go
+RUN go build -o build/smtp ./smtp/smtp.go
 
 
 FROM --platform=linux/arm/v6 arm32v6/alpine:3.13.5
@@ -21,5 +22,6 @@ ENV APP_ROOT=/root
 WORKDIR /$APP_ROOT
 
 COPY --from=builder /root/build/client /root/client
+COPY --from=builder /root/build/smtp /root/smtp
 
 ENTRYPOINT [ "/root/client" ]
