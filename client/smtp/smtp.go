@@ -25,7 +25,9 @@ func (bkd *Backend) NewSession(c *smtp.Conn) (smtp.Session, error) {
 }
 
 // A Session is returned after successful login.
-type Session struct{}
+type Session struct{
+	auth bool
+}
 
 // AuthMechanisms returns a slice of available auth mechanisms; only PLAIN is
 // supported in this example.
@@ -39,21 +41,31 @@ func (s *Session) Auth(mech string) (sasl.Server, error) {
 		if username != "username" || password != "password" {
 			return errors.New("Invalid username or password")
 		}
+		s.auth = true
 		return nil
 	}), nil
 }
 
 func (s *Session) Mail(from string, opts *smtp.MailOptions) error {
+	if !s.auth {
+		return smtp.ErrAuthRequired
+	}
 	log.Println("Mail from:", from)
 	return nil
 }
 
 func (s *Session) Rcpt(to string, opts *smtp.RcptOptions) error {
+	if !s.auth {
+		return smtp.ErrAuthRequired
+	}
 	log.Println("Rcpt to:", to)
 	return nil
 }
 
 func (s *Session) Data(r io.Reader) error {
+	if !s.auth {
+		return smtp.ErrAuthRequired
+	}
 	request := buildRequest(r)
 
 	err := client.SendRequest(request)
@@ -66,6 +78,7 @@ func (s *Session) Data(r io.Reader) error {
 func (s *Session) Reset() {}
 
 func (s *Session) Logout() error {
+	s.auth = false
 	return nil
 }
 
@@ -91,19 +104,6 @@ func buildRequest(r io.Reader) client.Request {
 	return request
 }
 
-// ExampleServer runs an example SMTP server.
-//
-// It can be tested manually with e.g. netcat:
-//
-//	> netcat -C localhost 1025
-//	EHLO localhost
-//	AUTH PLAIN
-//	AHVzZXJuYW1lAHBhc3N3b3Jk
-//	MAIL FROM:<root@nsa.gov>
-//	RCPT TO:<root@gchq.gov.uk>
-//	DATA
-//	Hey <3
-//	.
 func main() {
 	// validate inputs are valid
 	_ = buildRequest(nil)
