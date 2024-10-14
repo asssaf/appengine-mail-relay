@@ -64,8 +64,12 @@ def sendNotification():
         sender=sender_address,
         to=recipient_address,
     )
-    email_msg.Send()
 
+    try:
+        email_msg.Send()
+    except Exception as e:
+        print("error in send: ", e)
+        abort(500)
 
     return json.dumps({})
 
