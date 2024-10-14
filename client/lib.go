@@ -67,9 +67,13 @@ func SendRequest(request Request) error {
 
 	jsonData := fmt.Sprintf(`{"signature": "%s"}`, signedHex)
 
-	_, err = http.Post(request.BaseUri+"/notification", "application/json", bytes.NewBuffer([]byte(jsonData)))
+	r, err := http.Post(request.BaseUri+"/notification", "application/json", bytes.NewBuffer([]byte(jsonData)))
 	if err != nil {
 		return fmt.Errorf("post: %s: %w", err.Error(), httpError(err))
+	}
+
+	if r.StatusCode >= 300 {
+		return fmt.Errorf("Post failed with status: %d", r.StatusCode)
 	}
 
 	return nil
