@@ -67,6 +67,7 @@ def sendNotification():
 
     try:
         email_msg.Send()
+        print("email sent")
     except Exception as e:
         print("error in send: ", e)
         abort(500)
