@@ -1,3 +1,5 @@
-appengine-python-standard>=1.0.0
+appengine-python-standard==1.1.6
 Flask==3.0.3
-PyNaCl
+PyNaCl==1.5.0
+google-cloud-monitoring==2.22.2
+python-dateutil==2.9.0
