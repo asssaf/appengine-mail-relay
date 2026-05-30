@@ -1,6 +1,4 @@
 import datetime
-import email
-import io
 import json
 import os
 import sys
@@ -9,7 +7,7 @@ import traceback
 
 import dateutil.tz
 from nacl.encoding import HexEncoder
-from nacl.signing import SigningKey, VerifyKey, SignedMessage
+from nacl.signing import SigningKey, VerifyKey
 from flask import abort, Flask, request
 
 from google.appengine.api import app_identity, mail, wrap_wsgi_app
@@ -120,7 +118,7 @@ def notifySends():
                 print("error in admin send: ", e)
                 abort(500)
 
-    except Exception as e:
+    except Exception:
         exc_info = sys.exc_info()
         err = ''.join(traceback.format_exception(*exc_info))
         return json.dumps({

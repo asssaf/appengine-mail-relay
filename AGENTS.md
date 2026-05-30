@@ -9,7 +9,14 @@ Example:
 uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 ```
 
-To find the latest commit hash for an action, go to the releases page in the action's github repository, find the latest release and get its commit hash.
+To find the latest commit hash for an action, do NOT rely on your internal knowledge. Instead, ALWAYS use `git ls-remote --tags` to fetch the latest tags and hashes from the action's repository.
+
+Example:
+```bash
+git ls-remote --tags https://github.com/actions/checkout.git | tail -n 10
+```
+
+Identify the latest stable version tag (e.g., `v4.2.2`) and its corresponding commit hash.
 If a reviewer tells you that a version is hallucinated or doesn't exist, don't downgrade. The reviewer probably has outdated information.
 
 ## General Notes

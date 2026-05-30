@@ -25,7 +25,7 @@ func (bkd *Backend) NewSession(c *smtp.Conn) (smtp.Session, error) {
 }
 
 // A Session is returned after successful login.
-type Session struct{
+type Session struct {
 	auth bool
 }
 
