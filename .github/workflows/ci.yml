@@ -53,6 +53,12 @@ jobs:
           export PUBLIC_KEY=0000000000000000000000000000000000000000000000000000000000000000
           export SEND_TO=test@example.com
           export GOOGLE_CLOUD_PROJECT=test-project
+          # Create dummy env_variables.yaml because app.yaml includes it
+          cat <<EOF > server/env_variables.yaml
+          env_variables:
+            PUBLIC_KEY: "$PUBLIC_KEY"
+            SEND_TO: "$SEND_TO"
+          EOF
           dev_appserver.py server/app.yaml --port=8080 --admin_port=8000 --clear_datastore=yes --skip_sdk_update_check=yes &
           SERVER_PID=$!
           sleep 10
