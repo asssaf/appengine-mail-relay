@@ -3,7 +3,7 @@ module github.com/asssaf/appengine-mail-relay/client
 go 1.16
 
 require (
-	github.com/breml/rootcerts v0.2.10
-	github.com/emersion/go-sasl v0.0.0-20231106173351-e73c9f7bad43 // indirect
-	github.com/emersion/go-smtp v0.21.3 // indirect
+	github.com/breml/rootcerts v0.3.5
+	github.com/emersion/go-sasl v0.0.0-20241020182733-b788ff22d5a6
+	github.com/emersion/go-smtp v0.24.0
 )
