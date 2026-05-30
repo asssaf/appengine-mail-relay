@@ -11,6 +11,11 @@ handlers:
   login: admin
   secure: always
 
+- url: /health
+  script: auto
+  login: admin
+  secure: always
+
   # This handler routes all requests not caught above to your main app. It is
   # required when static routes are defined, but can be omitted (along with
   # the entire handlers section) when there are no static files defined.
