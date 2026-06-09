@@ -3,12 +3,16 @@ load("@pip//:requirements.bzl", "requirement")
 
 py_test(
     name = "test_main",
-    srcs = ["test_main.py", "conftest.py"],
+    srcs = [
+        "conftest.py",
+        "pytest_runner.py",
+        "test_main.py",
+    ],
     deps = [
         "//server:server",
         requirement("pytest"),
         requirement("pytest-mock"),
     ],
-    main = "test_main.py",
-    args = ["-v"],
+    main = "pytest_runner.py",
+    args = ["server/tests/test_main.py", "-v"],
 )
