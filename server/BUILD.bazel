@@ -1,0 +1,25 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@pip//:requirements.bzl", "requirement")
+
+py_library(
+    name = "lib",
+    srcs = ["services.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("appengine-python-standard"),
+        requirement("google-cloud-monitoring"),
+        requirement("python-dateutil"),
+    ],
+)
+
+py_binary(
+    name = "server",
+    srcs = ["main.py"],
+    visibility = ["//visibility:public"],
+    main = "main.py",
+    deps = [
+        ":lib",
+        requirement("Flask"),
+        requirement("PyNaCl"),
+    ],
+)

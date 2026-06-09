@@ -1,0 +1,4 @@
+load("@gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/asssaf/appengine-mail-relay
+gazelle(name = "gazelle")
