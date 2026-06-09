@@ -1,7 +1,5 @@
 load("@rules_go//go:def.bzl", "go_library")
 
-# Placeholder
-
 go_library(
     name = "client",
     srcs = ["lib.go"],

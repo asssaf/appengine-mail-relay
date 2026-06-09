@@ -1,6 +1,6 @@
 module github.com/asssaf/appengine-mail-relay/client
 
-go 1.17
+go 1.16
 
 require (
 	github.com/breml/rootcerts v0.3.5

@@ -35,5 +35,3 @@ pip.parse(
     requirements_lock = "//server:requirements-lock.txt",
 )
 use_repo(pip, "pip")
-
-# Platform definitions for Go cross-compilation
