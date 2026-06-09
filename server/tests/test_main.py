@@ -1,6 +1,5 @@
 import json
 import time
-import pytest
 from nacl.signing import SigningKey
 from nacl.encoding import HexEncoder
 

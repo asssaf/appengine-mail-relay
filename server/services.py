@@ -1,7 +1,5 @@
 import datetime
 import os
-import traceback
-import sys
 
 import dateutil.tz
 from google.appengine.api import app_identity, mail

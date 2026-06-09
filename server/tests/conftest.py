@@ -1,6 +1,5 @@
 import os
 import pytest
-from flask import Flask
 
 # Set TESTING environment variable before importing the app
 os.environ['TESTING'] = 'true'
