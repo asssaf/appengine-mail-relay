@@ -42,12 +42,16 @@ jobs:
           install_components: 'app-engine-python'
       - name: Install dependencies
         run: |
-          pip install -r server/requirements.txt
+          pip install -r server/requirements.txt -r server/requirements-dev.txt
           pip install ruff
       - name: Lint with ruff
         uses: astral-sh/ruff-action@0ce1b0bf8b818ef400413f810f8a11cdbda0034b # v4.0.0
         with:
           src: "./server"
+      - name: Run tests
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
+          pytest server/tests
       - name: Smoke test dev_appserver.py
         run: |
           export PUBLIC_KEY=0000000000000000000000000000000000000000000000000000000000000000
