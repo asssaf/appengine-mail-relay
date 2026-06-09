@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "smtp_lib",
+    srcs = ["smtp.go"],
+    importpath = "github.com/asssaf/appengine-mail-relay/client/smtp",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//client",
+        "@com_github_emersion_go_sasl//:go-sasl",
+        "@com_github_emersion_go_smtp//:go-smtp",
+    ],
+)
+
+go_binary(
+    name = "smtp",
+    embed = [":smtp_lib"],
+    visibility = ["//visibility:public"],
+)

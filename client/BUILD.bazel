@@ -1,0 +1,11 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+# Placeholder
+
+go_library(
+    name = "client",
+    srcs = ["lib.go"],
+    importpath = "github.com/asssaf/appengine-mail-relay/client",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_breml_rootcerts//:rootcerts"],
+)
